@@ -17,10 +17,10 @@ public func unzip(data: Data) -> [String: Data] {
     
     fill_memory_filefunc(&filefunc32, &unzmem);
     
-    let file = unzOpen2("____", &filefunc32)
+    let file = unzOpen2("__nouse__", &filefunc32)
     
     guard unzGoToFirstFile(file) == UNZ_OK else {
-        fatalError()
+        fatalError("Failed `unzGoToFirstFile`")
     }
     
     var ret: [String: Data] = [:]
@@ -36,6 +36,9 @@ public func unzip(data: Data) -> [String: Data] {
         defer { buffer.deallocate(capacity: bufferSize) }
         while true {
             let len = unzReadCurrentFile(file, buffer, UInt32(bufferSize))
+            guard len >= 0 else {
+                fatalError("Failed to read file.")
+            }
             if len > 0 {
                 // read
                 out.append(buffer, count: Int(len))
@@ -60,8 +63,4 @@ public func unzip(data: Data) -> [String: Data] {
     unzClose(file)
     
     return ret
-}
-
-enum SwiftZipError: Error {
-    
 }
