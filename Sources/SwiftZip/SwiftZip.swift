@@ -46,6 +46,7 @@ public func unzip(data: Data) -> [String: Data] {
                 fatalError()
             }
         }
+        unzCloseCurrentFile(file)
         
         ret[String(cString: filename)] = out
         
@@ -56,6 +57,7 @@ public func unzip(data: Data) -> [String: Data] {
             break
         }
     }
+    unzClose(file)
     
     return ret
 }
