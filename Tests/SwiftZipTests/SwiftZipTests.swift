@@ -21,7 +21,7 @@ class SwiftZipTests: XCTestCase {
             "a.txt": dataA,
             "あいうえお.txt": dataB
         ]
-        let data = zip(entries: files)
+        let data = createZip(entries: files)
         let out = unzip(data: data)
         XCTAssertEqual(Set(out.keys), ["a.txt", "あいうえお.txt"])
         XCTAssertEqual(out["a.txt"], dataA)

@@ -70,7 +70,7 @@ public func unzip(data: Data) -> [String: Data] {
 /// Create zip archive.
 /// Doesn't contain file info, password.
 /// - Returns: zip archive data
-public func zip(entries: [String: Data]) -> Data {
+public func createZip(entries: [String: Data]) -> Data {
     
     var filefunc32 = zlib_filefunc_def();
     var zipmem = ourmemory_t();
