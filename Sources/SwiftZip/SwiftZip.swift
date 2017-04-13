@@ -1,6 +1,9 @@
 import Foundation
 import Cminizip
 
+/// Extract zip data.
+/// Discard file info, and only returns filename/data.
+/// - Returns: [filename:filedata] dictionary
 public func unzip(data: Data) -> [String: Data] {
     var data = data
 
@@ -64,6 +67,9 @@ public func unzip(data: Data) -> [String: Data] {
     return ret
 }
 
+/// Create zip archive.
+/// Doesn't contain file info, password.
+/// - Returns: zip archive data
 public func zip(entries: [String: Data]) -> Data {
     
     var filefunc32 = zlib_filefunc_def();
