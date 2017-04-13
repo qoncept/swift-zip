@@ -6,16 +6,31 @@ class SwiftZipTests: XCTestCase {
     func testUnzip() {
         do {
             let out = unzip(data: npz)
-            print(out)
+            XCTAssertEqual(Set(out.keys), ["a.npy", "b.npy"])
         }
         do {
             let out = unzip(data: directory)
-            print(out)
+            XCTAssertEqual(Set(out.keys), ["test/", "test/fuga.txt", "test/hoge.txt"])
         }
+    }
+    
+    func testZip() {
+        let dataA = Data(bytes: [0x00, 0x01, 0x02])
+        let dataB = Data(bytes: [0x00, 0x01, 0x02, 0x03, 0x04, 0x05])
+        let files = [
+            "a.txt": dataA,
+            "あいうえお.txt": dataB
+        ]
+        let data = zip(entries: files)
+        let out = unzip(data: data)
+        XCTAssertEqual(Set(out.keys), ["a.txt", "あいうえお.txt"])
+        XCTAssertEqual(out["a.txt"], dataA)
+        XCTAssertEqual(out["あいうえお.txt"], dataB)
     }
 
     static var allTests = [
         ("testUnzip", testUnzip),
+        ("testZip", testZip),
     ]
 }
 

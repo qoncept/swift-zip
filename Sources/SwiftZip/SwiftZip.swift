@@ -1,7 +1,6 @@
 import Foundation
 import Cminizip
 
-
 public func unzip(data: Data) -> [String: Data] {
     var data = data
 
@@ -63,4 +62,35 @@ public func unzip(data: Data) -> [String: Data] {
     unzClose(file)
     
     return ret
+}
+
+public func zip(entries: [String: Data]) -> Data {
+    
+    var filefunc32 = zlib_filefunc_def();
+    var zipmem = ourmemory_t();
+    defer { zipmem.base.deallocate(capacity: Int(zipmem.size)) }
+    
+    zipmem.grow = 1;
+    
+    fill_memory_filefunc(&filefunc32, &zipmem);
+    guard let file = zipOpen3("", APPEND_STATUS_CREATE, 0, nil, &filefunc32) else {
+        fatalError("Failed to open.")
+    }
+    
+    for (filename, filedata) in entries {
+        var zipinfo = zip_fileinfo()
+        zipOpenNewFileInZip3(file, filename, &zipinfo, nil, 0, nil, 0, nil, Z_DEFLATED, Z_DEFAULT_COMPRESSION, 0, -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY, nil, 0)
+        let result = filedata.withUnsafeBytes {
+            zipWriteInFileInZip(file, $0, UInt32(filedata.count))
+        }
+        guard result == ZIP_OK else {
+            fatalError("Failed to write file.")
+        }
+        zipCloseFileInZip(file)
+    }
+    zipClose(file, nil)
+    
+    let data = Data(bytes: zipmem.base, count: Int(zipmem.limit))
+    
+    return data
 }
