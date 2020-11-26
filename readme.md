@@ -6,6 +6,9 @@ let archive: Data = createZip(entries: filenameToData)
 ```
 
 ## License 
+
+[The MIT Lincese](https://github.com/qoncept/swift-zip/blob/master/LICENSE)
+
 - [zlib](https://github.com/madler/zlib)
 - [Minizip](https://github.com/nmoinvaz/minizip)
 
